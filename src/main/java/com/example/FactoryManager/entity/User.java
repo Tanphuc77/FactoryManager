@@ -1,0 +1,72 @@
+package com.example.FactoryManager.entity;
+
+import com.example.FactoryManager.enums.UserStatus;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Set;
+
+@Entity
+@Table(name = "user")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    String id;
+
+    @Column(nullable = false)
+    String firstname;
+
+    @Column(nullable = false)
+    String lastname;
+
+    LocalDate dateOfBirth;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    UserStatus status;
+
+    @Column(nullable = false)
+    String username;
+
+    @Column(nullable = false)
+    String password;
+
+    boolean projectManager;
+
+    String image;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    Role role;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_company",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "company_id")
+    )
+    Set<Company> company;
+
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_team",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "team_id")
+    )
+    Set<Team> team;
+
+    LocalDateTime createdAt;
+    LocalDateTime updatedAt;
+}

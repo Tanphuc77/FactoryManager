@@ -1,5 +1,6 @@
 package com.example.FactoryManager.configuration;
 
+import org.springframework.security.config.Customizer;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -54,6 +55,7 @@ public class SecurityConfig {
         );
 
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        httpSecurity.cors(Customizer.withDefaults());
         return httpSecurity.build();
 
     }

@@ -3,6 +3,7 @@ package com.example.FactoryManager.controller;
 import com.example.FactoryManager.dto.request.UserCreateRequest;
 import com.example.FactoryManager.dto.response.ApiResponse;
 import com.example.FactoryManager.dto.response.PageResponse;
+import com.example.FactoryManager.dto.response.UserDetailResponse;
 import com.example.FactoryManager.dto.response.UserResponse;
 import com.example.FactoryManager.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,6 +49,37 @@ public class UserController {
                 .result(pageResponse)
                 .build();
     }
+    @GetMapping("/get/{id}")
+    @Operation(
+            summary = "Get user by ID",
+            description = "Returns user information by ID",
+            method = "GET"
+    )
+    ApiResponse<UserDetailResponse> getUserById(@PathVariable String id) {
+        log.info("Fetching user by ID: {}", id);
+        UserDetailResponse userDetailResponse = userService.getUserById(id);
+        return ApiResponse.<UserDetailResponse>builder()
+                .code(200)
+                .message("Success")
+                .result(userDetailResponse)
+                .build();
+    }
+
+    @GetMapping("/getmyinfo")
+    @Operation(
+            summary = "Get my information",
+            description = "Returns the information of the currently logged-in user",
+            method = "GET"
+    )
+    ApiResponse<UserResponse> getMyInfo() {
+        log.info("Fetching my information");
+        UserResponse userResponse = userService.getMyInfo();
+        return ApiResponse.<UserResponse>builder()
+                .code(200)
+                .message("Success")
+                .result(userResponse)
+                .build();
+    }
 
     @PostMapping("/create")
     @Operation(
@@ -57,9 +89,12 @@ public class UserController {
     )
     public ApiResponse<UserResponse> createUser(@RequestBody UserCreateRequest userCreateRequest) {
         log.info("Creating user");
-        ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
-        apiResponse.setResult(userService.createUser(userCreateRequest));
-        return apiResponse;
+        UserResponse userResponse = userService.createUser(userCreateRequest);
+        return ApiResponse.<UserResponse>builder()
+                .code(200)
+                .message("Success")
+                .result(userResponse)
+                .build();
     }
 
     @PostMapping("/upload-image")

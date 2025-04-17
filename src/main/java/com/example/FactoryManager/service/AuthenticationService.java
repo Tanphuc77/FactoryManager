@@ -55,16 +55,7 @@ public class AuthenticationService {
     @Value("${jwt.signerKey}")
     protected String SIGNER_KEY;
 
-    @NonFinal
-    @Value("${jwt.valid-duration}")
-    protected long VALID_DURATION;
-
-    @NonFinal
-    @Value("${jwt.refreshable-duration}")
-    protected long REFRESHABLE_DURATION;
-
-    public IntrospectResponse introspect(IntrospectRequest request)
-            throws JOSEException, ParseException {
+    public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
         var token = request.getToken();
         boolean isValid = true;
 
@@ -74,11 +65,18 @@ public class AuthenticationService {
             // Kiểm tra trong DB xem token đã bị vô hiệu hóa chưa
             Optional<UserToken> optionalUserToken = userTokenRepository.findByToken(token);
             if (optionalUserToken.isPresent()) {
-                isValid = optionalUserToken.get().isValid(); // nếu đã logout, isValid = false
+                UserToken userToken = optionalUserToken.get();
+
+                isValid = userToken.isValid();
+
+                // Kiểm tra hết hạn của token: chuyển LocalDateTime thành Date
+                Date expirationTime = Date.from(userToken.getExpiryAt().atZone(ZoneId.systemDefault()).toInstant());
+                if (expirationTime.before(new Date())) {
+                    isValid = false; // Token đã hết hạn
+                }
             } else {
                 isValid = false; // Token không tồn tại trong DB
             }
-
         } catch (AppException e) {
             isValid = false;
         }
@@ -114,12 +112,13 @@ public class AuthenticationService {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
-        System.out.println("run at here 6 ");
+
         userTokenRepository.save(userToken);
 
         System.out.println("Login successful for user: " + request.getUsername());
         return AuthenticationResponse.builder()
                 .token(tokenResult.getToken())
+                .expiryAt(LocalDateTime.now().plusSeconds(tokenResult.getDuration()))
                 .authenticated(true)
                 .build();
     }
@@ -134,19 +133,19 @@ public class AuthenticationService {
                 .subject(user.getUsername())  // Định danh user
                 .issuer("SpringBootDatabase.com") // Hệ thống phát hành token
                 .issueTime(new Date()) // Ngày phát hành
-                .expirationTime(new Date(
-                        Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()
-                )) // Ngày hết hạn
+                .expirationTime(new Date(Instant.now().plusSeconds(duration).toEpochMilli())) // Ngày hết hạn dựa vào rememberMe
                 .jwtID(UUID.randomUUID().toString()) // ID duy nhất của token
                 .claim("scope", buildScope(user)) // Quyền của user
+                .claim("rememberMe", rememberMe) // Thêm thông tin về "Remember Me"
                 .build();
+
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
 
         JWSObject jwsObject = new JWSObject(header, payload);
 
         try {
-            jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes())); // Ký token với khóa bí mật
-            return new TokenResult(jwsObject.serialize(), duration); // Trả về token dưới dạng chuỗi
+            jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
+            return new TokenResult(jwsObject.serialize(), duration);
         } catch (JOSEException e) {
             log.error("Cannot create token", e);
             throw new RuntimeException(e);
@@ -157,16 +156,24 @@ public class AuthenticationService {
         JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token);
 
-        Date expiryTime = (isRefresh)
-                ? new Date(signedJWT.getJWTClaimsSet().getIssueTime().toInstant().plus(REFRESHABLE_DURATION, ChronoUnit.SECONDS).toEpochMilli())
+        // get "rememberMe" token
+        boolean rememberMe = (boolean) signedJWT.getJWTClaimsSet().getClaim("rememberMe");
+
+        long duration = rememberMe ? Duration.ofDays(7).getSeconds() : Duration.ofDays(1).getSeconds();
+
+        // Nếu là refresh token, tính theo REFRESHABLE_DURATION, nếu không tính theo expirationTime của JWT
+        Date expiryTime = isRefresh
+                ? new Date(signedJWT.getJWTClaimsSet().getIssueTime().toInstant().plus(duration, ChronoUnit.SECONDS).toEpochMilli())
                 : signedJWT.getJWTClaimsSet().getExpirationTime();
 
         boolean verified = signedJWT.verify(verifier);
 
+        // Kiểm tra nếu token hợp lệ và chưa hết hạn
         if (!(verified && expiryTime.after(new Date()))) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
 
+        // Kiểm tra trong DB xem token đã bị vô hiệu hóa chưa
         String jwtId = signedJWT.getJWTClaimsSet().getJWTID();
         if (userTokenRepository.existsById(jwtId)) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);

@@ -24,10 +24,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
-    @Column(nullable = false)
+    @Column(nullable = false,length = 30)
     String firstname;
 
-    @Column(nullable = false)
+    @Column(nullable = false,length = 30)
     String lastname;
 
     LocalDate dateOfBirth;
@@ -36,7 +36,7 @@ public class User {
     @Column(nullable = false)
     UserStatus status;
 
-    @Column(nullable = false)
+    @Column(unique = true, length = 30)
     String username;
 
     @Column(nullable = false)

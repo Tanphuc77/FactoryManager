@@ -42,8 +42,8 @@ spring:
       static-locations: classpath:/static/,file:upload/
 jwt:
   signerKey: "1TjXchw5FloESb63Kc+DFhTARvpWL4jUGCwfGWxuG5SIf/1y/LgJxHnMqaF6A/ij"
-  valid-duration: 3600
-  refreshable-duration: 36000
+#  valid-duration: 86400
+#  refreshable-duration: 604800
 
 openapi:
   service:

@@ -17,7 +17,11 @@ public enum ErrorCode {
     USER_NOT_FOUND(400,"User not found",HttpStatus.BAD_REQUEST),
     INVALID_CREDENTIALS(400, "Password is incorrect",HttpStatus.BAD_REQUEST),
     SUPER_ADMIN_ROLE_NOT_FOUND(400, "Super admin role not found", HttpStatus.BAD_REQUEST),
-    ROLE_NOT_ALLOWED(400,"Role not allowed" ,HttpStatus.BAD_REQUEST);
+    ROLE_NOT_ALLOWED(400,"Role not allowed" ,HttpStatus.BAD_REQUEST),
+    ONLY_LETTER(400,"First name: only letters" ,HttpStatus.BAD_REQUEST),
+    USERNAME_INVALID(400,"Username: Unique, character a-z, number 0-9, min length 3, max length 30" ,HttpStatus.BAD_REQUEST),
+    PASSWORD_INVALID(400,"Password: at least 8 characters, including uppercase, lowercase, numbers, and special characters" ,HttpStatus.BAD_REQUEST),
+    INVALID_BIRTH_YEAR(400,"Birth year must be greater than 1900" ,HttpStatus.BAD_REQUEST),;
 
     private final int code;
     private final String message;

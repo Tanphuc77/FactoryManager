@@ -1,6 +1,7 @@
 package com.example.FactoryManager.configuration;
 
 import org.springframework.security.config.Customizer;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
+import java.util.List;
+
 
 @Configuration
 @EnableWebSecurity
@@ -26,6 +30,9 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Autowired
+    private CorsProperties corsProperties;
 
     private static final String[] PUBLIC_ENDPOINTS = {
             "/auth/login",
@@ -62,18 +69,18 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UrlBasedCorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOriginPattern("*"); // Hoặc cụ thể hơn: https://factorymanager.onrender.com
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOriginPatterns(corsProperties.getAllowedOrigins());
+        configuration.setAllowedMethods(Arrays.asList(corsProperties.getAllowedMethods().split(",")));
+        configuration.setAllowedHeaders(Arrays.asList(corsProperties.getAllowedHeaders().split(",")));
+        configuration.setAllowCredentials(corsProperties.getAllowCredentials());
+        configuration.setExposedHeaders(List.of("Content-Disposition"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 
     @Bean
     public CorsFilter corsFilter() {

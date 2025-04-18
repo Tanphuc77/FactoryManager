@@ -12,7 +12,7 @@ import java.util.List;
 public class CorsProperties {
 
     private List<String> allowedOrigins;
-    private String allowedMethods;
-    private String allowedHeaders;
-    private Boolean allowCredentials;
+    private String allowedMethods = "GET, POST, PUT, DELETE";
+    private String allowedHeaders = "Content-Type, Authorization";
+    private Boolean allowCredentials = true;
 }

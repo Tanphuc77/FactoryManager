@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-
 @Component
 public class DefaultUserInitializer {
 
@@ -35,7 +33,7 @@ public class DefaultUserInitializer {
      */
     @PostConstruct
     public void init() {
-        // Kiểm tra nếu chưa có user nào có role SUPPER_ADMIN thì mới tạo mới
+
         if (userRepository.countByRole_Name(PredefinedRole.SUPER_ADMIN_ROLE) == 0) {
 
             Role superAdminRole = roleRepository.findByName(PredefinedRole.SUPER_ADMIN_ROLE)

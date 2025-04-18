@@ -2,7 +2,10 @@ package com.example.FactoryManager.service;
 
 import com.example.FactoryManager.configuration.SecurityUtil;
 import com.example.FactoryManager.constant.PredefinedRole;
+import com.example.FactoryManager.dto.request.ChangePasswordRequest;
 import com.example.FactoryManager.dto.request.UserCreateRequest;
+import com.example.FactoryManager.dto.request.UserSearchRequest;
+import com.example.FactoryManager.dto.request.UserUpdateRequest;
 import com.example.FactoryManager.dto.response.PageResponse;
 import com.example.FactoryManager.dto.response.UserDetailResponse;
 import com.example.FactoryManager.dto.response.UserResponse;
@@ -55,14 +58,14 @@ public class UserService {
         Pageable pageable = PageRequest.of(page, size);
         Page<User> userPage = userRepository.findAll(pageable);
 
-        List<UserResponse> userResponseList = new ArrayList<>();
+        List<UserResponse> userResponses = new ArrayList<>();
         for (User user : userPage.getContent()) {
             UserResponse userResponse = userMapper.toUserResponse(user);
-            userResponseList.add(userResponse);
+            userResponses.add(userResponse);
         }
 
         PageResponse<UserResponse> response = PageResponse.<UserResponse>builder()
-                .content(userResponseList)
+                .content(userResponses)
                 .currentPage(userPage.getNumber())
                 .totalPages(userPage.getTotalPages())
                 .totalElements(userPage.getTotalElements())
@@ -72,7 +75,7 @@ public class UserService {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
-    public UserDetailResponse getUserById(String id){
+    public UserDetailResponse getUserById(String id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
@@ -81,13 +84,13 @@ public class UserService {
     }
 
     public UserResponse getMyInfo() {
-       var context = SecurityContextHolder.getContext();
-       String name = context.getAuthentication().getName();
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
 
-       User user = userRepository.findByUsername(name)
-               .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findByUsername(name)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-       return userMapper.toUserResponse(user);
+        return userMapper.toUserResponse(user);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
@@ -102,15 +105,16 @@ public class UserService {
             throw new AppException(ErrorCode.INVALID_BIRTH_YEAR);
         }
 
+        if (PredefinedRole.SUPER_ADMIN_ROLE.equalsIgnoreCase(request.getRole().getName())) {
+            throw new AppException(ErrorCode.ROLE_NOT_ALLOWED);
+        }
+
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         Role role = roleRepository.findById(Integer.toString(request.getRole().getId()))
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
 
-        if (PredefinedRole.SUPER_ADMIN_ROLE.equalsIgnoreCase(role.getName())) {
-            throw new AppException(ErrorCode.ROLE_NOT_ALLOWED);
-        }
         user.setRole(role);
 
         Set<Company> companies = request.getCompanyIds().stream()
@@ -129,5 +133,75 @@ public class UserService {
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    public UserResponse updateUser(String userId, UserUpdateRequest userUpdateRequest) {
+        SecurityUtil.checkForbiddenAdminToModify(userUpdateRequest.getRole().getName());
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        if (userUpdateRequest.getUsername() != null && !userUpdateRequest.getUsername().equals(user.getUsername())) {
+            if (userRepository.existsUserByUsername(userUpdateRequest.getUsername())) {
+                throw new AppException(ErrorCode.USERNAME_ALREADY_EXISTS);
+            }
+            user.setUsername(userUpdateRequest.getUsername());
+        }
+
+        if (userUpdateRequest.getDateOfBirth().getYear() < 1900) {
+            throw new AppException(ErrorCode.INVALID_BIRTH_YEAR);
+        }
+
+        if (PredefinedRole.SUPER_ADMIN_ROLE.equalsIgnoreCase(user.getRole().getName())) {
+            throw new AppException(ErrorCode.ROLE_NOT_ALLOWED);
+        }
+
+        userMapper.updateUser(user, userUpdateRequest);
+        UserResponse userResponse = userMapper.toUserResponse(userRepository.save(user));
+
+        return userResponse;
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    public void deleteUser(String userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        SecurityUtil.checkForbiddenAdminToModify(user.getRole().getName());
+
+        if (PredefinedRole.SUPER_ADMIN_ROLE.equalsIgnoreCase(user.getRole().getName())) {
+            throw new AppException(ErrorCode.ROLE_NOT_ALLOWED);
+        }
+
+        userRepository.delete(user);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    public void changePasswordForUser(String userId,ChangePasswordRequest changePasswordRequest){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        SecurityUtil.checkForbiddenAdminToModify(user.getRole().getName());
+
+        user.setPassword(passwordEncoder.encode(changePasswordRequest.getPassword()));
+        userRepository.save(user);
+    }
+
+    public PageResponse<UserResponse> searchUser(UserSearchRequest userSearchRequest,int page,int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> userPage = userRepository.searchUser(
+                userSearchRequest,
+                pageable
+        );
+        List<UserResponse> userResponseList = userPage.getContent().stream()
+                .map(userMapper::toUserResponse)
+                .collect(Collectors.toList());
+
+        return PageResponse.<UserResponse>builder()
+                .content(userResponseList)
+                .currentPage(userPage.getNumber())
+                .totalPages(userPage.getTotalPages())
+                .totalElements(userPage.getTotalElements())
+                .build();
+    }
 
 }

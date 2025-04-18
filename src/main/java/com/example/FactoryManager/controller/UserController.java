@@ -1,6 +1,9 @@
 package com.example.FactoryManager.controller;
 
+import com.example.FactoryManager.dto.request.ChangePasswordRequest;
 import com.example.FactoryManager.dto.request.UserCreateRequest;
+import com.example.FactoryManager.dto.request.UserSearchRequest;
+import com.example.FactoryManager.dto.request.UserUpdateRequest;
 import com.example.FactoryManager.dto.response.ApiResponse;
 import com.example.FactoryManager.dto.response.PageResponse;
 import com.example.FactoryManager.dto.response.UserDetailResponse;
@@ -12,7 +15,6 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,6 +51,7 @@ public class UserController {
                 .result(pageResponse)
                 .build();
     }
+
     @GetMapping("/get/{id}")
     @Operation(
             summary = "Get user by ID",
@@ -117,5 +120,73 @@ public class UserController {
         }
     }
 
+    @PutMapping("/update/{userId}")
+    @Operation(
+            summary = "Update user information",
+            description = "Allows updating user information such as email, password, role,...",
+            method = "PUT"
+    )
+    public ApiResponse<UserResponse> updateUser(
+            @PathVariable String userId,
+            @RequestBody UserUpdateRequest userUpdateRequest) {
+        log.info("Updating user with ID: {}", userId);
+        UserResponse userResponse = userService.updateUser(userId, userUpdateRequest);
+        return ApiResponse.<UserResponse>builder()
+                .code(200)
+                .message("Success")
+                .result(userResponse)
+                .build();
+    }
+
+    @DeleteMapping("/delete/{id}")
+    @Operation(
+            summary = "Delete user",
+            description = "Allows deleting a user by ID",
+            method = "DELETE"
+    )
+    public ApiResponse<Void> deleteUser(@PathVariable String userId) {
+        log.info("Deleting user with ID: {}", userId);
+        userService.deleteUser(userId);
+        return ApiResponse.<Void>builder()
+                .code(200)
+                .message("User deleted successfully")
+                .build();
+    }
+
+    @PutMapping("/change-password/{userId}")
+    @Operation(
+            summary = "Change password",
+            description = "Allows changing the password of a user by ID",
+            method = "PUT"
+    )
+    public ApiResponse<Void> changePassword(
+            @PathVariable String userId,
+            @RequestBody ChangePasswordRequest changePasswordRequest) {
+        log.info("Changing password for user with ID: {}", userId);
+        userService.changePasswordForUser(userId, changePasswordRequest);
+        return ApiResponse.<Void>builder()
+                .code(200)
+                .message("Password changed successfully")
+                .build();
+    }
+
+    @GetMapping("/search")
+    @Operation(
+            summary = "Search users",
+            description = "Allows searching for users by keyword, role, and status",
+            method = "GET"
+    )
+    public ApiResponse<PageResponse<UserResponse>> searchUsers(
+            @ModelAttribute UserSearchRequest userSearchRequest,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+        log.info("Searching users with keyword: {}", userSearchRequest.getKeyword());
+        PageResponse<UserResponse> pageResponse = userService.searchUser(userSearchRequest, page, size);
+        return ApiResponse.<PageResponse<UserResponse>>builder()
+                .code(200)
+                .message("Success")
+                .result(pageResponse)
+                .build();
+    }
 
 }

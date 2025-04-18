@@ -21,7 +21,10 @@ public enum ErrorCode {
     ONLY_LETTER(400,"First name: only letters" ,HttpStatus.BAD_REQUEST),
     USERNAME_INVALID(400,"Username: Unique, character a-z, number 0-9, min length 3, max length 30" ,HttpStatus.BAD_REQUEST),
     PASSWORD_INVALID(400,"Password: at least 8 characters, including uppercase, lowercase, numbers, and special characters" ,HttpStatus.BAD_REQUEST),
-    INVALID_BIRTH_YEAR(400,"Birth year must be greater than 1900" ,HttpStatus.BAD_REQUEST),;
+    INVALID_BIRTH_YEAR(400,"Birth year must be greater than 1900" ,HttpStatus.BAD_REQUEST),
+    CONFIRM_PASSWORD_REQUIRED(400, "Confirm password is required", HttpStatus.BAD_REQUEST),
+    PASSWORD_CONFIRM_NOT_MATCH(400, "Confirm password does not match", HttpStatus.BAD_REQUEST),
+    PASSWORD_REQUIRED(400, "Password is required", HttpStatus.BAD_REQUEST);
 
     private final int code;
     private final String message;

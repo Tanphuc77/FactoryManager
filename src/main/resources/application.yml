@@ -25,10 +25,10 @@ spring:
       WRITE_DATES_AS_TIMESTAMPS: false
 
   datasource:
-    url: ${DBMS_CONNECTION:jdbc:mysql://localhost:3306/factorymanager}
+    url: ${DBMS_CONNECTION:jdbc:mysql://yamanote.proxy.rlwy.net:59748/railway}
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${DBMS_USERNAME:root}
-    password: ${DBMS_PASSWORD:04122003}
+    password: ${DBMS_PASSWORD:sDmzijrzMQTtlYLSmBOBIqIIxqZiCoAA}
     type: com.zaxxer.hikari.HikariDataSource
 
   jpa:

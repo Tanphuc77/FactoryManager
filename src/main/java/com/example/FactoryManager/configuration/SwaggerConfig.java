@@ -16,19 +16,19 @@ import org.springframework.core.env.Environment;
 import java.util.List;
 
 @Configuration
-public class OpenAPIConfig {
+public class SwaggerConfig {
 
     //Inject trực tiếp từ Environment để tránh lỗi placeholder
     private final Environment environment;
 
-    public OpenAPIConfig(Environment environment) {
+    public SwaggerConfig(Environment environment) {
         this.environment = environment;
     }
 
     @Bean
     public GroupedOpenApi authApi() {
         return GroupedOpenApi.builder()
-                .group("authentication")
+                .group("Authentication")
                 .pathsToMatch("/auth/**")
                 .packagesToScan("com.example.FactoryManager.controller")
                 .build();
@@ -37,8 +37,34 @@ public class OpenAPIConfig {
     @Bean
     public GroupedOpenApi userApi() {
         return GroupedOpenApi.builder()
-                .group("user")
+                .group("User")
                 .pathsToMatch("/users/**")
+                .packagesToScan("com.example.FactoryManager.controller")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi companyApi() {
+        return GroupedOpenApi.builder()
+                .group("Company")
+                .pathsToMatch("/companys/**")
+                .packagesToScan("com.example.FactoryManager.controller")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi teamApi() {
+        return GroupedOpenApi.builder()
+                .group("Team")
+                .pathsToMatch("/teams/**")
+                .packagesToScan("com.example.FactoryManager.controller")
+                .build();
+    }
+    @Bean
+    public GroupedOpenApi roleApi() {
+        return GroupedOpenApi.builder()
+                .group("Role")
+                .pathsToMatch("/roles/**")
                 .packagesToScan("com.example.FactoryManager.controller")
                 .build();
     }
@@ -57,8 +83,8 @@ public class OpenAPIConfig {
                         .description("API documents")
                         .version(version)
                         .license(new License().name("Apache 2.0").url("https://springdoc.org")))
-                .addSecurityItem(new SecurityRequirement().addList("bearerAuth")) // ✅ THÊM VÀO ĐÂY
-                .components(new Components().addSecuritySchemes("bearerAuth", // ✅ THÊM VÀO ĐÂY
+                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
+                .components(new Components().addSecuritySchemes("bearerAuth",
                         new SecurityScheme()
                                 .type(SecurityScheme.Type.HTTP)
                                 .scheme("bearer")

@@ -31,8 +31,8 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Autowired
-    private CorsProperties corsProperties;
+//    @Autowired
+//    private CorsProperties corsProperties;
 
     private static final String[] PUBLIC_ENDPOINTS = {
             "/auth/login",
@@ -68,19 +68,19 @@ public class SecurityConfig {
 
     }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(corsProperties.getAllowedOrigins());
-        configuration.setAllowedMethods(Arrays.asList(corsProperties.getAllowedMethods().split(",")));
-        configuration.setAllowedHeaders(Arrays.asList(corsProperties.getAllowedHeaders().split(",")));
-        configuration.setAllowCredentials(corsProperties.getAllowCredentials());
-        configuration.setExposedHeaders(List.of("Content-Disposition"));
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowedOriginPatterns(corsProperties.getAllowedOrigins());
+//        configuration.setAllowedMethods(Arrays.asList(corsProperties.getAllowedMethods().split(",")));
+//        configuration.setAllowedHeaders(Arrays.asList(corsProperties.getAllowedHeaders().split(",")));
+//        configuration.setAllowCredentials(corsProperties.getAllowCredentials());
+//        configuration.setExposedHeaders(List.of("Content-Disposition"));
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
 
     @Bean
     public CorsFilter corsFilter() {

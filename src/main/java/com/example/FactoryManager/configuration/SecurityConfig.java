@@ -68,34 +68,42 @@ public class SecurityConfig {
 
     }
 
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOriginPatterns(corsProperties.getAllowedOrigins());
-//        configuration.setAllowedMethods(Arrays.asList(corsProperties.getAllowedMethods().split(",")));
-//        configuration.setAllowedHeaders(Arrays.asList(corsProperties.getAllowedHeaders().split(",")));
-//        configuration.setAllowCredentials(corsProperties.getAllowCredentials());
-//        configuration.setExposedHeaders(List.of("Content-Disposition"));
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
-//    }
-
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
 
-        corsConfiguration.setAllowCredentials(true); // Optional, depending on your needs
-        corsConfiguration.addAllowedOriginPattern("*"); // Use this instead of addAllowedOrigin("*") in Spring 5.3+
-        corsConfiguration.addAllowedMethod("*");
-        corsConfiguration.addAllowedHeader("*");
+        // ✅ CHỈ ĐỊNH domain cụ thể, KHÔNG dùng "*"
+        corsConfiguration.setAllowedOriginPatterns(List.of(
+                "https://factorymanager.onrender.com",
+                "http://localhost:3000"
+        ));
+
+        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        corsConfiguration.setAllowedHeaders(List.of("*"));
+        corsConfiguration.setExposedHeaders(List.of("Content-Disposition"));
+        corsConfiguration.setAllowCredentials(true); // phải set sau khi set origin cụ thể
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
 
-        return new CorsFilter(source); // ✅ pass the source here
+        return new CorsFilter(source);
     }
+
+
+//    @Bean
+//    public CorsFilter corsFilter() {
+//        CorsConfiguration corsConfiguration = new CorsConfiguration();
+//
+//        corsConfiguration.setAllowCredentials(true); // Optional, depending on your needs
+//        corsConfiguration.addAllowedOriginPattern("*"); // Use this instead of addAllowedOrigin("*") in Spring 5.3+
+//        corsConfiguration.addAllowedMethod("*");
+//        corsConfiguration.addAllowedHeader("*");
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", corsConfiguration);
+//
+//        return new CorsFilter(source); // ✅ pass the source here
+//    }
 
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {

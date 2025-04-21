@@ -75,7 +75,7 @@ public class SecurityConfig {
         // ✅ CHỈ ĐỊNH domain cụ thể, KHÔNG dùng "*"
         corsConfiguration.setAllowedOriginPatterns(List.of(
                 "https://factorymanager.onrender.com",
-                "http://localhost:3000"
+                "http://localhost:5175"
         ));
 
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));

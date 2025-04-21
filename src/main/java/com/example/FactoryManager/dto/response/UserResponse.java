@@ -19,6 +19,8 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserResponse {
 
+    String userId;
+
     String image;
 
     String username;

@@ -20,6 +20,8 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDetailResponse {
 
+    String userId;
+
     String username;
 
     String firstname;

@@ -1,0 +1,58 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /factory/api
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    url: /factory/api/v3/api-docs
+    config-url: /factory/api/v3/api-docs/swagger-config
+  api-docs:
+    path: /v3/api-docs
+
+
+spring:
+  application:
+    name: FactoryManager
+  flyway:
+    locations: classpath:/db/migration,classpath:/dev/db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
+  data:
+    redis:
+      host: default
+      port: 6378
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+
+  datasource:
+    url: ${DBMS_CONNECTION}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DBMS_USERNAME}
+    password: ${DBMS_PASSWORD}
+    type: com.zaxxer.hikari.HikariDataSource
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  web:
+    resources:
+      static-locations: classpath:/static/,file:upload/
+jwt:
+  signerKey: "1TjXchw5FloESb63Kc+DFhTARvpWL4jUGCwfGWxuG5SIf/1y/LgJxHnMqaF6A/ij"
+#  valid-duration: 86400
+#  refreshable-duration: 604800
+
+openapi:
+  service:
+    server: http://localhost:8080
+    title: API Service
+    version: 1.0.0
+
+default:
+  superadmin:
+    password: 12345678Aa?

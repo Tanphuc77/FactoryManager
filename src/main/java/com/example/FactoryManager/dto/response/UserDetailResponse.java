@@ -22,6 +22,8 @@ public class UserDetailResponse {
 
     String userId;
 
+    String image;
+
     String username;
 
     String firstname;

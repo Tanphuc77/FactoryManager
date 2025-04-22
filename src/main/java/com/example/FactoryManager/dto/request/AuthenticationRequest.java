@@ -18,6 +18,4 @@ public class AuthenticationRequest {
 
     @NotBlank
     String password;
-
-    boolean rememberMe;
 }

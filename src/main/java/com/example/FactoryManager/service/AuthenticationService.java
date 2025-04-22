@@ -100,7 +100,7 @@ public class AuthenticationService {
         // Vô hiệu hóa các token cũ của user
         userTokenRepository.invalidateAllActiveTokensByUserId(user.getId());
 
-        TokenResult tokenResult = generateToken(user, request.isRememberMe());
+        TokenResult tokenResult = generateToken(user);
         UserToken userToken = UserToken.builder()
                 .user(user)
                 .token(tokenResult.getToken())
@@ -124,8 +124,8 @@ public class AuthenticationService {
     }
 
     // Tạo JWT cho user dựa trên thông tin của họ.
-    private TokenResult generateToken(User user, boolean rememberMe) {
-        long duration = rememberMe ? Duration.ofDays(7).getSeconds() : Duration.ofDays(1).getSeconds();
+    private TokenResult generateToken(User user) {
+        long duration = Duration.ofDays(7).getSeconds(); // save 7 date
 
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
@@ -136,7 +136,6 @@ public class AuthenticationService {
                 .expirationTime(new Date(Instant.now().plusSeconds(duration).toEpochMilli())) // Ngày hết hạn dựa vào rememberMe
                 .jwtID(UUID.randomUUID().toString()) // ID duy nhất của token
                 .claim("scope", buildScope(user)) // Quyền của user
-                .claim("rememberMe", rememberMe) // Thêm thông tin về "Remember Me"
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -156,15 +155,7 @@ public class AuthenticationService {
         JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token);
 
-        // get "rememberMe" token
-        boolean rememberMe = (boolean) signedJWT.getJWTClaimsSet().getClaim("rememberMe");
-
-        long duration = rememberMe ? Duration.ofDays(7).getSeconds() : Duration.ofDays(1).getSeconds();
-
-        // Nếu là refresh token, tính theo REFRESHABLE_DURATION, nếu không tính theo expirationTime của JWT
-        Date expiryTime = isRefresh
-                ? new Date(signedJWT.getJWTClaimsSet().getIssueTime().toInstant().plus(duration, ChronoUnit.SECONDS).toEpochMilli())
-                : signedJWT.getJWTClaimsSet().getExpirationTime();
+        Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
 
         boolean verified = signedJWT.verify(verifier);
 
@@ -181,6 +172,7 @@ public class AuthenticationService {
 
         return signedJWT;
     }
+
 
     public void logout(LogoutRequest request) throws ParseException, JOSEException {
         try {
@@ -220,7 +212,7 @@ public class AuthenticationService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
 
-        TokenResult tokenResult = generateToken(user, false);
+        TokenResult tokenResult = generateToken(user);
 
         UserToken newToken = UserToken.builder()
                 .id(jwtId)

@@ -24,7 +24,12 @@ public enum ErrorCode {
     INVALID_BIRTH_YEAR(400,"Birth year must be greater than 1900" ,HttpStatus.BAD_REQUEST),
     CONFIRM_PASSWORD_REQUIRED(400, "Confirm password is required", HttpStatus.BAD_REQUEST),
     PASSWORD_CONFIRM_NOT_MATCH(400, "Confirm password does not match", HttpStatus.BAD_REQUEST),
-    PASSWORD_REQUIRED(400, "Password is required", HttpStatus.BAD_REQUEST);
+    PASSWORD_REQUIRED(400, "Password is required", HttpStatus.BAD_REQUEST),
+    COMPANY_CODE_REQUIRED(400, "Company code is required", HttpStatus.BAD_REQUEST),
+    COMPANY_NAME_REQUIRED(400, "Company name is required", HttpStatus.BAD_REQUEST),
+    CONTACT_NAME_REQUIRED(400, "Contact name is required", HttpStatus.BAD_REQUEST),
+    MOBILE_PHONE_INVALID(400, "Mobile phone is invalid", HttpStatus.BAD_REQUEST),
+    CODE_COMPANY_EXISTS(400, "Company code already exists", HttpStatus.BAD_REQUEST),;
 
     private final int code;
     private final String message;

@@ -1,6 +1,8 @@
 package com.example.FactoryManager.controller;
 
+import com.example.FactoryManager.dto.request.CompanyRequest;
 import com.example.FactoryManager.dto.response.ApiResponse;
+import com.example.FactoryManager.dto.response.CompanyDropdownResponse;
 import com.example.FactoryManager.dto.response.CompanyResponse;
 import com.example.FactoryManager.service.CopanyService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,19 +27,35 @@ public class CompanyController {
     @Autowired
     CopanyService companyService;
 
-    @GetMapping("/get")
+    @GetMapping("/dropdown-list")
     @Operation(
-            summary = "Get list of companies",
+            summary = "Get list dropdow of companies",
             description = "Returns a list of companies",
             method = "GET"
     )
-    ApiResponse<List<CompanyResponse>> getAllCompanies() {
+    ApiResponse<List<CompanyDropdownResponse>> getCompaniesForDropdown() {
         log.info("Fetching all companies");
-        List<CompanyResponse> companyResponses = companyService.getAllCompanies();
-        return ApiResponse.<List<CompanyResponse>>builder()
+        List<CompanyDropdownResponse> companyResponses = companyService.getCompaniesForDropdown();
+        return ApiResponse.<List<CompanyDropdownResponse>>builder()
                 .code(200)
                 .message("Success")
                 .result(companyResponses)
+                .build();
+    }
+
+    @GetMapping("/create")
+    @Operation(
+            summary = "Create a new company",
+            description = "Creates a new company and returns the created company",
+            method = "POST"
+    )
+    ApiResponse<CompanyResponse> createCompany(CompanyRequest companyRequest) {
+        log.info("Creating a new company");
+        CompanyResponse companyResponse = companyService.createCompany(companyRequest);
+        return ApiResponse.<CompanyResponse>builder()
+                .code(200)
+                .message("Success")
+                .result(companyResponse)
                 .build();
     }
 

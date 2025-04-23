@@ -31,7 +31,8 @@ public enum ErrorCode {
     CONTACT_NAME_REQUIRED(400, "Contact name is required", HttpStatus.BAD_REQUEST),
     MOBILE_PHONE_INVALID(400, "Mobile phone is invalid", HttpStatus.BAD_REQUEST),
     CODE_COMPANY_EXISTS(400, "Company code already exists", HttpStatus.BAD_REQUEST),
-    INVALID_DOB(400, "Date of birth is invalid", HttpStatus.BAD_REQUEST),;
+    INVALID_DOB(400, "Date of birth is invalid", HttpStatus.BAD_REQUEST),
+    USER_INACTIVE(400, "User is inactive", HttpStatus.BAD_REQUEST),;
 
     private final int code;
     private final String message;

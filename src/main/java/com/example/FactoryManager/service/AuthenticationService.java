@@ -11,6 +11,7 @@ import com.example.FactoryManager.dto.response.TokenResult;
 import com.example.FactoryManager.entity.Role;
 import com.example.FactoryManager.entity.User;
 import com.example.FactoryManager.entity.UserToken;
+import com.example.FactoryManager.enums.UserStatus;
 import com.example.FactoryManager.exception.AppException;
 import com.example.FactoryManager.exception.ErrorCode;
 import com.example.FactoryManager.repository.UserRepository;
@@ -96,6 +97,9 @@ public class AuthenticationService {
                 user.getPassword());
         if (!authenticated)
             throw new AppException(ErrorCode.INVALID_CREDENTIALS);
+
+        if(user.getStatus().equals(UserStatus.INACTIVE))
+            throw new AppException(ErrorCode.USER_INACTIVE);
 
         // Vô hiệu hóa các token cũ của user
         userTokenRepository.invalidateAllActiveTokensByUserId(user.getId());

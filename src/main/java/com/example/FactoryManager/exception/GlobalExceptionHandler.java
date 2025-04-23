@@ -18,19 +18,28 @@ public class GlobalExceptionHandler {
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setCode(errorCode.getCode());
         apiResponse.setMessage(e.getMessage());
-        return ResponseEntity.badRequest().body(apiResponse);
+        return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     ResponseEntity<ApiResponse> handlingValidation(MethodArgumentNotValidException exception) {
-        String enumKey = exception.getFieldError().getDefaultMessage();
+        String enumKey = null;
+
+        if (exception.getFieldError() != null) {
+            enumKey = exception.getFieldError().getDefaultMessage();
+        }
+
+        if (enumKey == null && !exception.getBindingResult().getAllErrors().isEmpty()) {
+            // Ưu tiên lấy lỗi đầu tiên
+            enumKey = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        }
 
         ErrorCode errorCode = ErrorCode.INVALID_KEY;
 
         try {
             errorCode = ErrorCode.valueOf(enumKey);
         } catch (IllegalArgumentException e) {
-
+            // Xử lý khi enumKey không hợp lệ
         }
 
         ApiResponse apiResponse = new ApiResponse();
@@ -40,6 +49,7 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(apiResponse);
     }
+
 
     @ExceptionHandler(value = Exception.class)
     ResponseEntity<ApiResponse> handlingRuntimeException(Exception exception) {

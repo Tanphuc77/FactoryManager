@@ -17,7 +17,7 @@ public enum ErrorCode {
     USER_NOT_FOUND(400,"User not found",HttpStatus.BAD_REQUEST),
     INVALID_CREDENTIALS(400, "Password is incorrect",HttpStatus.BAD_REQUEST),
     SUPER_ADMIN_ROLE_NOT_FOUND(400, "Super admin role not found", HttpStatus.BAD_REQUEST),
-    ROLE_NOT_ALLOWED(403,"Role not allowed" ,HttpStatus.BAD_REQUEST),
+    ROLE_NOT_ALLOWED(403,"Role not allowed" ,HttpStatus.FORBIDDEN),
     ONLY_LETTER(400,"First name: only letters" ,HttpStatus.BAD_REQUEST),
     USERNAME_INVALID(400,"Username: Unique, character a-z, number 0-9, min length 3, max length 30" ,HttpStatus.BAD_REQUEST),
     PASSWORD_INVALID(400,"Password: at least 8 characters, including uppercase, lowercase, numbers, and special characters" ,HttpStatus.BAD_REQUEST),
@@ -29,7 +29,8 @@ public enum ErrorCode {
     COMPANY_NAME_REQUIRED(400, "Company name is required", HttpStatus.BAD_REQUEST),
     CONTACT_NAME_REQUIRED(400, "Contact name is required", HttpStatus.BAD_REQUEST),
     MOBILE_PHONE_INVALID(400, "Mobile phone is invalid", HttpStatus.BAD_REQUEST),
-    CODE_COMPANY_EXISTS(400, "Company code already exists", HttpStatus.BAD_REQUEST),;
+    CODE_COMPANY_EXISTS(400, "Company code already exists", HttpStatus.BAD_REQUEST),
+    INVALID_DOB(400, "Date of birth is invalid", HttpStatus.BAD_REQUEST),;
 
     private final int code;
     private final String message;

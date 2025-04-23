@@ -101,10 +101,6 @@ public class UserService {
             throw new AppException(ErrorCode.USERNAME_ALREADY_EXISTS);
         }
 
-        if (request.getDateOfBirth().getYear() < 1900) {
-            throw new AppException(ErrorCode.INVALID_BIRTH_YEAR);
-        }
-
         if (PredefinedRole.SUPER_ADMIN_ROLE.equalsIgnoreCase(request.getRole().getName())) {
             throw new AppException(ErrorCode.ROLE_NOT_ALLOWED);
         }
@@ -148,10 +144,6 @@ public class UserService {
             user.setUsername(userUpdateRequest.getUsername());
         }
 
-        if (userUpdateRequest.getDateOfBirth().getYear() < 1900) {
-            throw new AppException(ErrorCode.INVALID_BIRTH_YEAR);
-        }
-
         if (PredefinedRole.SUPER_ADMIN_ROLE.equalsIgnoreCase(user.getRole().getName())) {
             throw new AppException(ErrorCode.ROLE_NOT_ALLOWED);
         }
@@ -183,6 +175,7 @@ public class UserService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         SecurityUtil.checkForbiddenAdminToModify(user.getRole().getName());
+        SecurityUtil.checkForbiddenSuperAdminToModifySelf(user.getUsername());
 
         user.setPassword(passwordEncoder.encode(changePasswordRequest.getPassword()));
         userRepository.save(user);

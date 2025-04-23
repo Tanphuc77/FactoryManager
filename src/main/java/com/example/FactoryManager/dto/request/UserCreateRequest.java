@@ -4,6 +4,7 @@ import com.example.FactoryManager.entity.Company;
 import com.example.FactoryManager.entity.Role;
 import com.example.FactoryManager.entity.Team;
 import com.example.FactoryManager.enums.UserStatus;
+import com.example.FactoryManager.validator.DobConstraint;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -37,7 +38,7 @@ public class UserCreateRequest {
     String lastname;
 
     @DateTimeFormat(pattern = "dd/MM/yyyy")
-    @Past(message = "Date of birth must be in the past")
+    @DobConstraint(min = 10, message = "INVALID_DOB")
     private LocalDate dateOfBirth;
 
     @Enumerated(EnumType.STRING)

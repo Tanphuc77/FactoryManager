@@ -11,6 +11,7 @@ import com.example.FactoryManager.dto.response.UserResponse;
 import com.example.FactoryManager.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -90,7 +91,7 @@ public class UserController {
             description = "Allows creating new accounts with information such as email, password, role,...",
             method = "POST"
     )
-    public ApiResponse<UserResponse> createUser(@RequestBody UserCreateRequest userCreateRequest) {
+    public ApiResponse<UserResponse> createUser(@Valid @RequestBody UserCreateRequest userCreateRequest) {
         log.info("Creating user");
         UserResponse userResponse = userService.createUser(userCreateRequest);
         return ApiResponse.<UserResponse>builder()
@@ -128,7 +129,7 @@ public class UserController {
     )
     public ApiResponse<UserResponse> updateUser(
             @PathVariable String userId,
-            @RequestBody UserUpdateRequest userUpdateRequest) {
+            @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
         log.info("Updating user with ID: {}", userId);
         UserResponse userResponse = userService.updateUser(userId, userUpdateRequest);
         return ApiResponse.<UserResponse>builder()
@@ -161,7 +162,7 @@ public class UserController {
     )
     public ApiResponse<Void> changePassword(
             @PathVariable String userId,
-            @RequestBody ChangePasswordRequest changePasswordRequest) {
+            @Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
         log.info("Changing password for user with ID: {}", userId);
         userService.changePasswordForUser(userId, changePasswordRequest);
         return ApiResponse.<Void>builder()

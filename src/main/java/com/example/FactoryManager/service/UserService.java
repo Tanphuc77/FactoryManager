@@ -101,16 +101,15 @@ public class UserService {
             throw new AppException(ErrorCode.USERNAME_ALREADY_EXISTS);
         }
 
-        if (PredefinedRole.SUPER_ADMIN_ROLE.equalsIgnoreCase(request.getRole().getName())) {
-            throw new AppException(ErrorCode.ROLE_NOT_ALLOWED);
-        }
-
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         Role role = roleRepository.findById(Integer.toString(request.getRole().getId()))
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
 
+        if (PredefinedRole.SUPER_ADMIN_ROLE.equalsIgnoreCase(role.getName())) {
+            throw new AppException(ErrorCode.ROLE_NOT_ALLOWED);
+        }
         user.setRole(role);
 
         Set<Company> companies = request.getCompanyIds().stream()
@@ -144,7 +143,10 @@ public class UserService {
             user.setUsername(userUpdateRequest.getUsername());
         }
 
-        if (PredefinedRole.SUPER_ADMIN_ROLE.equalsIgnoreCase(user.getRole().getName())) {
+        Role role = roleRepository.findById(Integer.toString(userUpdateRequest.getRole().getId()))
+                .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+
+        if (PredefinedRole.SUPER_ADMIN_ROLE.equalsIgnoreCase(role.getName())) {
             throw new AppException(ErrorCode.ROLE_NOT_ALLOWED);
         }
 

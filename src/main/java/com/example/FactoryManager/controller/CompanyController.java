@@ -4,6 +4,7 @@ import com.example.FactoryManager.dto.request.CompanyRequest;
 import com.example.FactoryManager.dto.response.ApiResponse;
 import com.example.FactoryManager.dto.response.CompanyDropdownResponse;
 import com.example.FactoryManager.dto.response.CompanyResponse;
+import com.example.FactoryManager.dto.response.PageResponse;
 import com.example.FactoryManager.service.CopanyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,10 +13,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,6 +26,24 @@ public class CompanyController {
 
     @Autowired
     CopanyService companyService;
+
+    @GetMapping("/get")
+    @Operation(
+            summary = "Get list of companies",
+            description = "Returns a paging list of companies",
+            method = "GET"
+    )
+    ApiResponse<PageResponse<CompanyResponse>> getAllCompanies(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size){
+        log.info("Fetching all companies");
+        PageResponse<CompanyResponse> pageResponse = companyService.getAllCompanies(page, size);
+        return ApiResponse.<PageResponse<CompanyResponse>>builder()
+                .code(200)
+                .message("Success")
+                .result(pageResponse)
+                .build();
+    }
 
     @GetMapping("/dropdown-list")
     @Operation(
@@ -58,6 +74,38 @@ public class CompanyController {
                 .code(200)
                 .message("Success")
                 .result(companyResponse)
+                .build();
+    }
+
+    @PutMapping("/update/{id}")
+    @Operation(
+            summary = "Update a company",
+            description = "Updates an existing company and returns the updated company",
+            method = "PUT"
+    )
+    ApiResponse<CompanyResponse> updateCompany(@PathVariable String id, @Valid @RequestBody CompanyRequest companyRequest) {
+        log.info("Updating company with ID: {}", id);
+        CompanyResponse companyResponse = companyService.updateCompany(id, companyRequest);
+        return ApiResponse.<CompanyResponse>builder()
+                .code(200)
+                .message("Success")
+                .result(companyResponse)
+                .build();
+    }
+
+    @DeleteMapping("/delete/{id}")
+    @Operation(
+            summary = "Delete a company",
+            description = "Deletes a company by ID",
+            method = "DELETE"
+    )
+    ApiResponse<Void> deleteCompany(@PathVariable String id) {
+        log.info("Deleting company with ID: {}", id);
+        companyService.deleteCompany(id);
+        return ApiResponse.<Void>builder()
+                .code(200)
+                .message("Success")
+                .result(null)
                 .build();
     }
 

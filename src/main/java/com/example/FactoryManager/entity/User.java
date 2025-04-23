@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -67,6 +69,10 @@ public class User {
     )
     Set<Team> team;
 
+    @CreationTimestamp
+    @Column(updatable = false)
     LocalDateTime createdAt;
+
+    @UpdateTimestamp
     LocalDateTime updatedAt;
 }

@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -45,6 +47,10 @@ public class Company {
     @Column(nullable = false, length = 200)
     String address;
 
-    LocalDateTime createAt;
-    LocalDateTime updateAt;
+    @CreationTimestamp
+    @Column(updatable = false)
+    LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    LocalDateTime updatedAt;
 }

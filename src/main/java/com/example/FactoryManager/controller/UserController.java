@@ -139,7 +139,7 @@ public class UserController {
                 .build();
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete/{userId}")
     @Operation(
             summary = "Delete user",
             description = "Allows deleting a user by ID",

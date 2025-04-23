@@ -15,6 +15,7 @@ public enum ErrorCode {
     TEAM_NOT_FOUND(400,"Team not found" ,HttpStatus.BAD_REQUEST ),
     ROLE_NOT_FOUND(400,"Role not found" ,HttpStatus.BAD_REQUEST ),
     USER_NOT_FOUND(400,"User not found",HttpStatus.BAD_REQUEST),
+    USERNAME_DOES_NOT_EXIST(400,"Username does not exist",HttpStatus.BAD_REQUEST),
     INVALID_CREDENTIALS(400, "Password is incorrect",HttpStatus.BAD_REQUEST),
     SUPER_ADMIN_ROLE_NOT_FOUND(400, "Super admin role not found", HttpStatus.BAD_REQUEST),
     ROLE_NOT_ALLOWED(403,"Role not allowed" ,HttpStatus.FORBIDDEN),

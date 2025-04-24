@@ -104,7 +104,7 @@ public class UserService {
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        Role role = roleRepository.findById(Integer.toString(request.getRole().getId()))
+        Role role = roleRepository.findById(request.getRole().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
 
         if (PredefinedRole.SUPER_ADMIN_ROLE.equalsIgnoreCase(role.getName())) {
@@ -130,8 +130,9 @@ public class UserService {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public UserResponse updateUser(String userId, UserUpdateRequest userUpdateRequest) {
-        SecurityUtil.checkForbiddenAdminToModify(userUpdateRequest.getRole().getName());
-        SecurityUtil.checkForbiddenSuperAdminToModifySelf(userUpdateRequest.getUsername());
+        if (userUpdateRequest.getRoleId() == null) {
+            throw new AppException(ErrorCode.ROLE_ID_CANNOT_BE_NULL);
+        }
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
@@ -143,12 +144,18 @@ public class UserService {
             user.setUsername(userUpdateRequest.getUsername());
         }
 
-        Role role = roleRepository.findById(Integer.toString(userUpdateRequest.getRole().getId()))
+        // Fetch role by roleId and validate
+        Role role = roleRepository.findById(userUpdateRequest.getRoleId())
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+
+        SecurityUtil.checkForbiddenAdminToModify(role.getName());
+        SecurityUtil.checkForbiddenSuperAdminToModifySelf(userUpdateRequest.getUsername());
 
         if (PredefinedRole.SUPER_ADMIN_ROLE.equalsIgnoreCase(role.getName())) {
             throw new AppException(ErrorCode.ROLE_NOT_ALLOWED);
         }
+
+        user.setRole(role);
 
         userMapper.updateUser(user, userUpdateRequest);
         UserResponse userResponse = userMapper.toUserResponse(userRepository.save(user));

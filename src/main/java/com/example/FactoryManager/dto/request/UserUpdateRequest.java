@@ -47,8 +47,8 @@ public class UserUpdateRequest {
 
     String image;
 
-    @JsonIgnoreProperties({"name","description", "createAt", "updateAt", "users", "permission"})
-    Role role;
+    //@JsonIgnoreProperties({"name","description", "createAt", "updateAt", "users", "permission"})
+    Integer roleId;
 
     Set<String> companyIds;
     Set<String> teamIds;

@@ -1,5 +1,6 @@
 package com.example.FactoryManager.entity;
 
+import com.example.FactoryManager.enums.CompanyStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -35,8 +36,9 @@ public class Company {
     @Column(nullable = false, length = 100)
     String state;
 
-    @Column(nullable = false, length = 50)
-    String status;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    CompanyStatus status;
 
     @Column(nullable = false, length = 55)
     String contactName;

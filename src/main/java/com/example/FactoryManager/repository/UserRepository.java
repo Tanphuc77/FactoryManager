@@ -21,11 +21,13 @@ public interface UserRepository extends JpaRepository<User, String> {
     long countByRole_Name(String roleName);
 
     @Query("SELECT u FROM User u WHERE " +
-            "(:#{#user.username} IS NULL OR u.username LIKE %:#{#user.username}%) AND " +
-            "(:#{#user.firstname} IS NULL OR u.firstname LIKE %:#{#user.firstname}%) AND " +
-            "(:#{#user.lastname} IS NULL OR u.lastname LIKE %:#{#user.lastname}%) AND " +
-            "(:#{#user.role} IS NULL OR u.role.name LIKE %:#{#user.phoneNumber}%) AND " +
+            "(:#{#user.keyword} IS NULL OR " +
+            " u.username LIKE %:#{#user.keyword}% OR " +
+            " u.firstname LIKE %:#{#user.keyword}% OR " +
+            " u.lastname LIKE %:#{#user.keyword}%) AND " +
+            "(:#{#user.role} IS NULL OR u.role.name LIKE %:#{#user.role}%) AND " +
             "(:#{#user.status} IS NULL OR u.status = :#{#user.status})")
-    Page<User> searchUser (@Param("user")UserSearchRequest user, Pageable pageable);
+    Page<User> searchUser(@Param("user") UserSearchRequest user, Pageable pageable);
+
 
 }

@@ -38,4 +38,8 @@ public class UserDetailResponse {
     UserStatus status;
 
     boolean projectManager;
+
+    Set<Company> company;
+
+    Set<Team> team;
 }

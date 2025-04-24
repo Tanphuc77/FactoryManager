@@ -1,6 +1,7 @@
 package com.example.FactoryManager.service;
 
 import com.example.FactoryManager.dto.request.CompanyRequest;
+import com.example.FactoryManager.dto.request.CompanySearchRequest;
 import com.example.FactoryManager.dto.response.CompanyDropdownResponse;
 import com.example.FactoryManager.dto.response.CompanyResponse;
 import com.example.FactoryManager.dto.response.PageResponse;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -92,6 +94,23 @@ public class CopanyService {
         companyRepository.delete(company);
     }
 
+    public PageResponse<CompanyResponse> searchCompany(CompanySearchRequest companySearchRequest, int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Company> companyPage = companyRepository.searchCompanies(companySearchRequest, pageable);
+
+        List<CompanyResponse> listCompanyResponse = companyPage.getContent().stream()
+                .map(companyMapper::toCompanyResponse)
+                .collect(Collectors.toList());
+
+
+        return PageResponse.<CompanyResponse>builder()
+                .content(listCompanyResponse)
+                .currentPage(companyPage.getNumber())
+                .totalPages(companyPage.getTotalPages())
+                .totalElements(companyPage.getTotalElements())
+                .build();
+    }
 
 
 

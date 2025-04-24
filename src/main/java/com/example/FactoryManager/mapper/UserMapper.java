@@ -20,7 +20,6 @@ public interface UserMapper {
     @Mapping(source = "role.name", target = "roleName")
     UserDetailResponse toUserDetailResponse(User user);
 
-    @Mapping(target = "role", ignore = true)
     void updateUser(@MappingTarget User user, UserUpdateRequest userRequest);
 
 }

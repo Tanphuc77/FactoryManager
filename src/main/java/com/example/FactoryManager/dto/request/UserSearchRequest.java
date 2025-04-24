@@ -1,5 +1,6 @@
 package com.example.FactoryManager.dto.request;
 
+import com.example.FactoryManager.enums.UserStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -9,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserSearchRequest {
-    private String keyword;
-    private String role;
-    private String status;
+    String keyword;
+    String role;
+    UserStatus status;
 }

@@ -1,6 +1,7 @@
 package com.example.FactoryManager.controller;
 
 import com.example.FactoryManager.dto.request.CompanyRequest;
+import com.example.FactoryManager.dto.request.CompanySearchRequest;
 import com.example.FactoryManager.dto.response.ApiResponse;
 import com.example.FactoryManager.dto.response.CompanyDropdownResponse;
 import com.example.FactoryManager.dto.response.CompanyResponse;
@@ -108,5 +109,25 @@ public class CompanyController {
                 .result(null)
                 .build();
     }
+
+    @GetMapping("search")
+    @Operation(
+            summary = "Search for companies",
+            description = "Searches for companies based on the provided criteria",
+            method = "GET"
+    )
+    ApiResponse <PageResponse<CompanyResponse>> searchCompany(
+            @ModelAttribute CompanySearchRequest companySearchRequest,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+        log.info("Searching for companies with criteria: {}", companySearchRequest);
+        PageResponse<CompanyResponse> pageResponse = companyService.searchCompany(companySearchRequest, page, size);
+        return ApiResponse.<PageResponse<CompanyResponse>>builder()
+                .code(200)
+                .message("Success")
+                .result(pageResponse)
+                .build();
+    }
+
 
 }

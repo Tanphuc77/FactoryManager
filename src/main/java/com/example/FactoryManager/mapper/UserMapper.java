@@ -9,7 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {RoleMapper.class})
 public interface UserMapper {
     User toUser(UserCreateRequest userCreateRequest);
     @Mapping(source = "id", target = "userId")
@@ -17,7 +17,7 @@ public interface UserMapper {
     UserResponse toUserResponse(User user);
 
     @Mapping(source = "id", target = "userId")
-    @Mapping(source = "role.name", target = "roleName")
+    @Mapping(source = "role", target = "role")
     UserDetailResponse toUserDetailResponse(User user);
 
     void updateUser(@MappingTarget User user, UserUpdateRequest userRequest);

@@ -130,10 +130,6 @@ public class UserService {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public UserResponse updateUser(String userId, UserUpdateRequest userUpdateRequest) {
-        if (userUpdateRequest.getRoleId() == null) {
-            throw new AppException(ErrorCode.ROLE_ID_CANNOT_BE_NULL);
-        }
-
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 

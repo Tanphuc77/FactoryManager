@@ -1,6 +1,7 @@
 package com.example.FactoryManager.dto.response;
 
 import com.example.FactoryManager.entity.Company;
+import com.example.FactoryManager.entity.Role;
 import com.example.FactoryManager.entity.Team;
 import com.example.FactoryManager.enums.UserStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -32,7 +33,9 @@ public class UserDetailResponse {
 
     LocalDate dateOfBirth;
 
-    String roleName;
+    RoleResponse role;
+
+    //String roleName;
 
     @Enumerated(EnumType.STRING)
     UserStatus status;

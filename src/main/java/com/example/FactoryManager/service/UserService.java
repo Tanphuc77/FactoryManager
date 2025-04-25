@@ -112,17 +112,12 @@ public class UserService {
         }
         user.setRole(role);
 
-        Set<Company> companies = request.getCompanyIds().stream()
-                .map(id -> companyRepository.findById(id)
-                        .orElseThrow(() -> new AppException(ErrorCode.COMPANY_NOT_FOUND)))
-                .collect(Collectors.toSet());
-        user.setCompany(new HashSet<>(companies));
+        Set<Company> companies = mapCompanyIdsToEntities(request.getCompanyIds());
+        user.setCompany(companies);
 
-        Set<Team> teams = request.getTeamIds().stream()
-                .map(id -> teamRepository.findById(id)
-                        .orElseThrow(() -> new AppException(ErrorCode.TEAM_NOT_FOUND)))
-                .collect(Collectors.toSet());
-        user.setTeam(new HashSet<>(teams));
+        Set<Team> teams = mapTeamIdsToEntities(request.getTeamIds());
+        user.setTeam(teams);
+
 
         // Save user
         return userMapper.toUserResponse(userRepository.save(user));
@@ -152,6 +147,12 @@ public class UserService {
         }
 
         user.setRole(role);
+
+        Set<Company> companies = mapCompanyIdsToEntities(userUpdateRequest.getCompanyIds());
+        user.setCompany(companies);
+
+        Set<Team> teams = mapTeamIdsToEntities(userUpdateRequest.getTeamIds());
+        user.setTeam(teams);
 
         userMapper.updateUser(user, userUpdateRequest);
         UserResponse userResponse = userMapper.toUserResponse(userRepository.save(user));
@@ -202,6 +203,24 @@ public class UserService {
                 .totalPages(userPage.getTotalPages())
                 .totalElements(userPage.getTotalElements())
                 .build();
+    }
+
+    private Set<Company> mapCompanyIdsToEntities(Set<String> companyIds) {
+        if (companyIds == null) return Collections.emptySet();
+
+        return companyIds.stream()
+                .map(id -> companyRepository.findById(id)
+                        .orElseThrow(() -> new AppException(ErrorCode.COMPANY_NOT_FOUND)))
+                .collect(Collectors.toSet());
+    }
+
+    private Set<Team> mapTeamIdsToEntities(Set<String> teamIds) {
+        if (teamIds == null) return Collections.emptySet();
+
+        return teamIds.stream()
+                .map(id -> teamRepository.findById(id)
+                        .orElseThrow(() -> new AppException(ErrorCode.TEAM_NOT_FOUND)))
+                .collect(Collectors.toSet());
     }
 
 }

@@ -2,6 +2,7 @@ package com.example.FactoryManager.dto.request;
 
 import com.example.FactoryManager.enums.CompanyStatus;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -29,7 +30,7 @@ public class CompanyRequest {
     @NotBlank(message = "State is required")
     String state;
 
-    @NotBlank(message = "Status is required")
+    @NotNull(message = "Status is required")
     CompanyStatus status;
 
     @NotBlank(message = "Contact name is required")

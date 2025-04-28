@@ -62,7 +62,7 @@ public class CompanyController {
                 .build();
     }
 
-    @GetMapping("/create")
+    @PostMapping("/create")
     @Operation(
             summary = "Create a new company",
             description = "Creates a new company and returns the created company",

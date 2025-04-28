@@ -55,6 +55,13 @@ public class CopanyService {
 
     }
 
+    public CompanyResponse getCompanyById(String id){
+        Company company = companyRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.COMPANY_NOT_FOUND));
+
+        return companyMapper.toCompanyResponse(company);
+    }
+
     public List<CompanyDropdownResponse> getCompaniesForDropdown(){
         var companies = companyRepository.findAll();
 

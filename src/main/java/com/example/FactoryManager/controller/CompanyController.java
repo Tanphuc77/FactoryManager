@@ -62,6 +62,22 @@ public class CompanyController {
                 .build();
     }
 
+    @GetMapping("/get/{id}")
+    @Operation(
+            summary = "Get company by ID",
+            description = "Returns a company by ID",
+            method = "GET"
+    )
+    ApiResponse<CompanyResponse> getCompanyById(@PathVariable String id) {
+        log.info("Fetching company with ID: {}", id);
+        CompanyResponse companyResponse = companyService.getCompanyById(id);
+        return ApiResponse.<CompanyResponse>builder()
+                .code(200)
+                .message("Success")
+                .result(companyResponse)
+                .build();
+    }
+
     @PostMapping("/create")
     @Operation(
             summary = "Create a new company",

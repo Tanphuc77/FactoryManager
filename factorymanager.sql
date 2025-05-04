@@ -75,7 +75,6 @@ CREATE TABLE IF NOT EXISTS `permission` (
   `description` varchar(255) DEFAULT NULL,
   `create_at` datetime(6) DEFAULT NULL,
   `update_at` datetime(6) DEFAULT NULL,
-  `group_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK2ojme20jpga3r4r79tdso17gi` (`name`),
   KEY `FKqp7umovkuakff1jilk6dp9l1x` (`group_id`),
@@ -83,12 +82,12 @@ CREATE TABLE IF NOT EXISTS `permission` (
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table railway.permission: ~5 rows (approximately)
-INSERT INTO `permission` (`id`, `name`, `description`, `create_at`, `update_at`, `group_id`) VALUES
-	(1, 'VIEW_DATA', 'View data list', '2025-04-16 06:45:07.000000', '2025-04-16 06:45:07.000000', 1),
-	(2, 'ADD_DATA', 'Create data', '2025-04-16 06:45:07.000000', '2025-04-16 06:45:07.000000', 1),
-	(3, 'EDIT_DATA', 'Update data', '2025-04-16 06:45:07.000000', '2025-04-16 06:45:07.000000', 1),
-	(4, 'DELETE_DATA', 'delete data', '2025-04-16 06:45:07.000000', '2025-04-16 06:45:07.000000', 1),
-	(9, 'VIEW_DASHBOARD', 'View dashboard system', '2025-04-16 06:45:07.000000', '2025-04-16 06:45:07.000000', 1);
+INSERT INTO `permission` (`id`, `name`, `description`, `create_at`, `update_at`) VALUES
+	(1, 'VIEW_DATA', 'View data list', '2025-04-16 06:45:07.000000', '2025-04-16 06:45:07.000000'),
+	(2, 'ADD_DATA', 'Create data', '2025-04-16 06:45:07.000000', '2025-04-16 06:45:07.000000'),
+	(3, 'EDIT_DATA', 'Update data', '2025-04-16 06:45:07.000000', '2025-04-16 06:45:07.000000'),
+	(4, 'DELETE_DATA', 'delete data', '2025-04-16 06:45:07.000000', '2025-04-16 06:45:07.000000'),
+	(9, 'VIEW_DASHBOARD', 'View dashboard system', '2025-04-16 06:45:07.000000', '2025-04-16 06:45:07.000000');
 
 -- Dumping structure for table railway.permission_group
 CREATE TABLE IF NOT EXISTS `permission_group` (

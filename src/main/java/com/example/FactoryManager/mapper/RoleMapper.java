@@ -1,5 +1,6 @@
 package com.example.FactoryManager.mapper;
 
+import com.example.FactoryManager.dto.response.RolePermissionResponse;
 import com.example.FactoryManager.dto.response.RoleResponse;
 import com.example.FactoryManager.entity.Role;
 import org.mapstruct.Mapper;
@@ -10,4 +11,8 @@ public interface RoleMapper {
 
     @Mapping(source = "id", target = "roleId")
     RoleResponse toRoleResponse(Role role);
+
+    @Mapping(source = "id", target = "roleId")
+    @Mapping(source = "permission", target = "permissions")
+    RolePermissionResponse toRolePermissionResponse(Role role);
 }

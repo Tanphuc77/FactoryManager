@@ -160,7 +160,6 @@ public class AuthenticationService {
         SignedJWT signedJWT = SignedJWT.parse(token);
 
         Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-
         boolean verified = signedJWT.verify(verifier);
 
         // Kiểm tra nếu token hợp lệ và chưa hết hạn
@@ -170,7 +169,8 @@ public class AuthenticationService {
 
         // Kiểm tra trong DB xem token đã bị vô hiệu hóa chưa
         String jwtId = signedJWT.getJWTClaimsSet().getJWTID();
-        if (userTokenRepository.existsById(jwtId)) {
+        Optional<UserToken> optionalUserToken = userTokenRepository.findById(jwtId);
+        if (optionalUserToken.isPresent() && !optionalUserToken.get().isValid()) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
 

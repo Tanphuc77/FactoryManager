@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class CopanyService {
     CompanyMapper companyMapper;
 
 
+    @PreAuthorize("hasAuthority('VIEW_COMPANY')")
     public PageResponse<CompanyResponse> getAllCompanies(int page, int size){
         Pageable pageable = PageRequest.of(page, size);
         Page<Company> companyPage = companyRepository.findAll(pageable);
@@ -55,6 +57,7 @@ public class CopanyService {
 
     }
 
+    @PreAuthorize("hasAuthority('VIEW_COMPANY')")
     public CompanyResponse getCompanyById(String id){
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.COMPANY_NOT_FOUND));
@@ -68,6 +71,7 @@ public class CopanyService {
         return companies.stream().map(companyMapper::toCompanyDropdownResponse).toList();
     }
 
+    @PreAuthorize("hasAuthority('ADD_COMPANY')")
     public CompanyResponse createCompany(CompanyRequest companyRequest){
         if(companyRepository.existsByCode(companyRequest.getCode())){
             throw new AppException(ErrorCode.CODE_COMPANY_EXISTS);
@@ -77,6 +81,7 @@ public class CopanyService {
         return companyMapper.toCompanyResponse(companyRepository.save(company));
     }
 
+    @PreAuthorize("hasAuthority('EDIT_COMPANY')")
     public CompanyResponse updateCompany(String id, CompanyRequest companyRequest){
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.COMPANY_NOT_FOUND));
@@ -94,6 +99,7 @@ public class CopanyService {
 
     }
 
+    @PreAuthorize("hasAuthority('DELETE_COMPANY')")
     public void deleteCompany(String id){
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.COMPANY_NOT_FOUND));
@@ -101,6 +107,7 @@ public class CopanyService {
         companyRepository.delete(company);
     }
 
+    @PreAuthorize("hasAuthority('SEARCH_COMPANY')")
     public PageResponse<CompanyResponse> searchCompany(CompanySearchRequest companySearchRequest, int page, int size){
         Pageable pageable = PageRequest.of(page, size);
 

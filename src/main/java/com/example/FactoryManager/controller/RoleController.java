@@ -1,6 +1,8 @@
 package com.example.FactoryManager.controller;
 
+import com.example.FactoryManager.dto.request.RolePermissionRequest;
 import com.example.FactoryManager.dto.response.ApiResponse;
+import com.example.FactoryManager.dto.response.RolePermissionResponse;
 import com.example.FactoryManager.dto.response.RoleResponse;
 import com.example.FactoryManager.service.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,9 +11,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -38,6 +38,55 @@ public class RoleController {
                 .code(200)
                 .message("Success")
                 .result(roleResponses)
+                .build();
+    }
+
+    @GetMapping("/get-with-permissions")
+    @Operation(
+            summary = "Get list of roles with permissions",
+            description = "Returns a list of roles with permissions",
+            method = "GET"
+    )
+    ApiResponse<List<RolePermissionResponse>> getAllRolesWithPermissions() {
+        log.info("Fetching all roles with permissions");
+        List<RolePermissionResponse> rolePermissionResponses = roleService.getAllRolesWithPermissions();
+        return ApiResponse.<List<RolePermissionResponse>>builder()
+                .code(200)
+                .message("Success")
+                .result(rolePermissionResponses)
+                .build();
+    }
+
+    @GetMapping("/{roleId}")
+    @Operation(
+            summary = "Get role by ID",
+            description = "Returns a role by ID",
+            method = "GET"
+    )
+    ApiResponse<RoleResponse> getRoleById(@PathVariable int roleId) {
+        log.info("Fetching role by ID");
+        RoleResponse roleResponse = roleService.getRoleById(roleId);
+        return ApiResponse.<RoleResponse>builder()
+                .code(200)
+                .message("Success")
+                .result(roleResponse)
+                .build();
+    }
+
+    @PutMapping("/{roleId}/assign-permissions")
+    @Operation(
+            summary = "Assign permissions to role",
+            description = "Assigns permissions to a role",
+            method = "PUT"
+    )
+    ApiResponse<String> assignPermissionsToRole(
+            @PathVariable int roleId,
+            @RequestBody RolePermissionRequest rolePermissionRequest) {
+        log.info("Assigning permissions to role");
+        roleService.assignPermissionsToRole(roleId,rolePermissionRequest);
+        return ApiResponse.<String>builder()
+                .code(200)
+                .message("Success")
                 .build();
     }
 

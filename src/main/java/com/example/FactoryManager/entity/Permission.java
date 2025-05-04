@@ -24,10 +24,6 @@ public class Permission {
 
     String description;
 
-//    @ManyToOne
-//    @JoinColumn(name = "group_id")
-//    PermissionGroup group;
-
     @CreationTimestamp
     LocalDateTime createAt;
 

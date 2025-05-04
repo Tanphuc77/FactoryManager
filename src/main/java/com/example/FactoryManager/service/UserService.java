@@ -53,7 +53,7 @@ public class UserService {
     TeamRepository teamRepository;
     RoleRepository roleRepository;
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    @PreAuthorize("hasAuthority('VIEW_LIST_USER')")
     public PageResponse<UserResponse> getAllUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<User> userPage = userRepository.findAll(pageable);
@@ -74,7 +74,7 @@ public class UserService {
         return response;
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    @PreAuthorize("hasAuthority('VIEW_LIST_USER')")
     public UserDetailResponse getUserById(String id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
@@ -93,7 +93,7 @@ public class UserService {
         return userMapper.toUserResponse(user);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    @PreAuthorize("hasAuthority('ADD_USER')")
     public UserResponse createUser(UserCreateRequest request) {
         SecurityUtil.checkForbiddenAdminToModify(request.getRole().getName());
 
@@ -123,7 +123,7 @@ public class UserService {
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    @PreAuthorize("hasAuthority('EDIT_USER')")
     public UserResponse updateUser(String userId, UserUpdateRequest userUpdateRequest) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
@@ -160,7 +160,7 @@ public class UserService {
         return userResponse;
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    @PreAuthorize("hasAuthority('DELETE_USER')")
     public void deleteUser(String userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
@@ -175,7 +175,7 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    @PreAuthorize("hasAuthority('CHANGE_PASSWORD')")
     public void changePasswordForUser(String userId,ChangePasswordRequest changePasswordRequest){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
@@ -187,6 +187,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @PreAuthorize("hasAuthority('SEARCH_USER')")
     public PageResponse<UserResponse> searchUser(UserSearchRequest userSearchRequest,int page,int size){
         Pageable pageable = PageRequest.of(page, size);
         Page<User> userPage = userRepository.searchUser(

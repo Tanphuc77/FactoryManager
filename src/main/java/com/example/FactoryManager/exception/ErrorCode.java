@@ -34,7 +34,9 @@ public enum ErrorCode {
     INVALID_DOB(400, "Date of birth is invalid", HttpStatus.BAD_REQUEST),
     USER_INACTIVE(400, "User is inactive", HttpStatus.BAD_REQUEST),
     ROLE_ID_CANNOT_BE_NULL(400, "Role ID cannot be null", HttpStatus.BAD_REQUEST),
-    PERMISSION_NOT_FOUND(400,"Permission not found" ,HttpStatus.BAD_REQUEST );
+    PERMISSION_NOT_FOUND(400,"Permission not found" ,HttpStatus.BAD_REQUEST ),
+    ROLE_ALREADY_EXISTS(400,"Role already exits" ,HttpStatus.BAD_REQUEST ),
+    INVALID_INPUT(400,"Invalid input" ,HttpStatus.BAD_REQUEST );
 
     private final int code;
     private final String message;

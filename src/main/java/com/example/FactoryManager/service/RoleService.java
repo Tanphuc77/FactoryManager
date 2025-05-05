@@ -1,5 +1,6 @@
 package com.example.FactoryManager.service;
 
+import com.example.FactoryManager.dto.request.RolePermissionCreateRequest;
 import com.example.FactoryManager.dto.request.RolePermissionRequest;
 import com.example.FactoryManager.dto.response.RolePermissionResponse;
 import com.example.FactoryManager.dto.response.RoleResponse;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -69,5 +71,35 @@ public class RoleService {
 
         roleRepository.save(role);
 
+    }
+
+    @Transactional
+    public RolePermissionResponse createRole(RolePermissionCreateRequest request) {
+        if (roleRepository.existsByName(request.getName())) {
+            throw new AppException(ErrorCode.ROLE_ALREADY_EXISTS);
+        }
+
+        if (request.getPermissionIds() == null || request.getPermissionIds().isEmpty()) {
+            throw new AppException(ErrorCode.INVALID_INPUT);
+        }
+
+        // Chuyển đổi DTO thành entity
+        Role role = roleMapper.toRolePermission(request);
+        Set<Permission> permissions = permissionRepository.findByIdIn(request.getPermissionIds());
+
+        // Kiểm tra quyền hợp lệ
+        Set<Integer> foundPermissionIds = permissions.stream()
+                .map(Permission::getId)
+                .collect(Collectors.toSet());
+        Set<Integer> missingIds = request.getPermissionIds().stream()
+                .filter(id -> !foundPermissionIds.contains(id))
+                .collect(Collectors.toSet());
+        if (!missingIds.isEmpty()) {
+            throw new AppException(ErrorCode.PERMISSION_NOT_FOUND);
+        }
+
+        role.setPermission(permissions);
+
+        return roleMapper.toRolePermissionResponse(roleRepository.save(role));
     }
 }

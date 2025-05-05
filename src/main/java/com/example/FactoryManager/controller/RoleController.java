@@ -1,5 +1,6 @@
 package com.example.FactoryManager.controller;
 
+import com.example.FactoryManager.dto.request.RolePermissionCreateRequest;
 import com.example.FactoryManager.dto.request.RolePermissionRequest;
 import com.example.FactoryManager.dto.response.ApiResponse;
 import com.example.FactoryManager.dto.response.RolePermissionResponse;
@@ -87,6 +88,23 @@ public class RoleController {
         return ApiResponse.<String>builder()
                 .code(200)
                 .message("Success")
+                .build();
+    }
+
+    @PostMapping("/create")
+    @Operation(
+            summary = "Create role",
+            description = "Creates a new role",
+            method = "POST"
+    )
+    ApiResponse<RolePermissionResponse> createRole(
+            @RequestBody RolePermissionCreateRequest rolePermissionCreateRequest) {
+        log.info("Creating role");
+        RolePermissionResponse rolePermissionResponse = roleService.createRole(rolePermissionCreateRequest);
+        return ApiResponse.<RolePermissionResponse>builder()
+                .code(200)
+                .message("Success")
+                .result(rolePermissionResponse)
                 .build();
     }
 

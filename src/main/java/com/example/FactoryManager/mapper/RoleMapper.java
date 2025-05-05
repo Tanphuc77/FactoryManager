@@ -12,7 +12,7 @@ import com.example.FactoryManager.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {PermissionMapper.class})
 public interface RoleMapper {
 
     @Mapping(target = "id", ignore = true)

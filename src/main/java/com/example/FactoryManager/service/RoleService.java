@@ -46,10 +46,11 @@ public class RoleService {
                 .toList();
     }
 
-    public RoleResponse getRoleById(int roleId){
+    public RolePermissionResponse getRoleById(int roleId){
         Role role = roleRepository.findById(roleId)
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
-        return roleMapper.toRoleResponse(role);
+
+        return roleMapper.toRolePermissionResponse(role);
     }
 
     @Transactional

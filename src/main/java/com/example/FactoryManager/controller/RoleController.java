@@ -63,13 +63,13 @@ public class RoleController {
             description = "Returns a role by ID",
             method = "GET"
     )
-    ApiResponse<RoleResponse> getRoleById(@PathVariable int roleId) {
+    ApiResponse<RolePermissionResponse> getRoleById(@PathVariable int roleId) {
         log.info("Fetching role by ID");
-        RoleResponse roleResponse = roleService.getRoleById(roleId);
-        return ApiResponse.<RoleResponse>builder()
+        RolePermissionResponse rolePermissionResponse = roleService.getRoleById(roleId);
+        return ApiResponse.<RolePermissionResponse>builder()
                 .code(200)
                 .message("Success")
-                .result(roleResponse)
+                .result(rolePermissionResponse)
                 .build();
     }
 

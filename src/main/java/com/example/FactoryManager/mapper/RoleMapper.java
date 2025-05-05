@@ -18,6 +18,5 @@ public interface RoleMapper {
     @Mapping(source = "permission", target = "permissions")
     RolePermissionResponse toRolePermissionResponse(Role role);
 
-    @Mapping(source = "id", target = "permissionId")
-    PermissionResponse toPermissionResponse(Permission permission);
+
 }

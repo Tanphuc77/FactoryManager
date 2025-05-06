@@ -4,11 +4,15 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "ui_config")
+@Table(name = "ui_config", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_id", "screen_code"})
+})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,6 +31,10 @@ public class UIConfig {
     @Column(name = "config_json", nullable = false, columnDefinition = "TEXT")
     String configJson;
 
+    @CreationTimestamp
+    @Column(updatable = false)
     LocalDateTime createdAt;
+
+    @UpdateTimestamp
     LocalDateTime updatedAt;
 }

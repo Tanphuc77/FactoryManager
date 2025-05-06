@@ -14,6 +14,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
+
     boolean existsUserByUsername(String username);
 
     Optional<User> findByUsername(String username);
@@ -28,6 +29,7 @@ public interface UserRepository extends JpaRepository<User, String> {
             "(:#{#user.role} IS NULL OR u.role.name LIKE %:#{#user.role}%) AND " +
             "(:#{#user.status} IS NULL OR u.status = :#{#user.status})")
     Page<User> searchUser(@Param("user") UserSearchRequest user, Pageable pageable);
+
 
 
 }

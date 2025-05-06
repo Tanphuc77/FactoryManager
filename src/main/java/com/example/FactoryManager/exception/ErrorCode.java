@@ -36,7 +36,8 @@ public enum ErrorCode {
     ROLE_ID_CANNOT_BE_NULL(400, "Role ID cannot be null", HttpStatus.BAD_REQUEST),
     PERMISSION_NOT_FOUND(400,"Permission not found" ,HttpStatus.BAD_REQUEST ),
     ROLE_ALREADY_EXISTS(400,"Role already exits" ,HttpStatus.BAD_REQUEST ),
-    INVALID_INPUT(400,"Invalid input" ,HttpStatus.BAD_REQUEST );
+    INVALID_INPUT(400,"Invalid input" ,HttpStatus.BAD_REQUEST ),
+    UI_CONFIG_NOT_FOUND(400, "UI configuration not found", HttpStatus.BAD_REQUEST);
 
     private final int code;
     private final String message;

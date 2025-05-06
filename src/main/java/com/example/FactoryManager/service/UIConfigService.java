@@ -29,19 +29,22 @@ public class UIConfigService {
 
     UIMapper uiMapper;
 
-    public UIConfigResponse saveUIConfig(UIConfigRequest uiConfigRequest){
-
+    public UIConfigResponse saveUIConfig(UIConfigRequest uiConfigRequest) {
         User user = userRepository.findById(uiConfigRequest.getUserId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
+        String normalizedScreenCode = uiConfigRequest.getScreenCode() != null
+                ? uiConfigRequest.getScreenCode().trim().toUpperCase().replaceAll("\\s+", "_")
+                : "ITEM_MANAGEMENT";
+
         UIConfig uiConfig = uiMapper.toUIConfig(uiConfigRequest);
         uiConfig.setUser(user);
+        uiConfig.setScreenCode(normalizedScreenCode);
 
-        UIConfig existingUIConfig = uiConfigRepository.findByUserAndScreenCode(user, uiConfigRequest.getScreenCode())
+        UIConfig existingUIConfig = uiConfigRepository.findByUserAndScreenCode(user, normalizedScreenCode)
                 .orElse(null);
 
-
-        if(existingUIConfig != null) {
+        if (existingUIConfig != null) {
             existingUIConfig.setConfigJson(uiConfig.getConfigJson());
             uiConfigRepository.save(existingUIConfig);
             return uiMapper.toUIConfigResponse(existingUIConfig);
@@ -53,6 +56,7 @@ public class UIConfigService {
 
     public UIConfigResponse getUserCurrentUIConfig(User user, String screenCode) {
         log.info("Fetching UI config for userId: {}, screenCode: {}", user.getId(), screenCode);
+
         String normalizedScreenCode = screenCode != null
                 ? screenCode.trim().toUpperCase().replaceAll("\\s+", "_")
                 : "ITEM_MANAGEMENT";

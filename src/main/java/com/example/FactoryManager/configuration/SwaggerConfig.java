@@ -26,50 +26,6 @@ public class SwaggerConfig {
     }
 
     @Bean
-    public GroupedOpenApi authApi() {
-        return GroupedOpenApi.builder()
-                .group("Authentication")
-                .pathsToMatch("/auth/**")
-                .packagesToScan("com.example.FactoryManager.controller")
-                .build();
-    }
-
-    @Bean
-    public GroupedOpenApi userApi() {
-        return GroupedOpenApi.builder()
-                .group("User")
-                .pathsToMatch("/users/**")
-                .packagesToScan("com.example.FactoryManager.controller")
-                .build();
-    }
-
-    @Bean
-    public GroupedOpenApi companyApi() {
-        return GroupedOpenApi.builder()
-                .group("Company")
-                .pathsToMatch("/companys/**")
-                .packagesToScan("com.example.FactoryManager.controller")
-                .build();
-    }
-
-    @Bean
-    public GroupedOpenApi teamApi() {
-        return GroupedOpenApi.builder()
-                .group("Team")
-                .pathsToMatch("/teams/**")
-                .packagesToScan("com.example.FactoryManager.controller")
-                .build();
-    }
-    @Bean
-    public GroupedOpenApi roleApi() {
-        return GroupedOpenApi.builder()
-                .group("Role")
-                .pathsToMatch("/roles/**")
-                .packagesToScan("com.example.FactoryManager.controller")
-                .build();
-    }
-
-    @Bean
     public OpenAPI openAPI(
             @Value("${openapi.service.title}") String title,
             @Value("${openapi.service.version}") String version,

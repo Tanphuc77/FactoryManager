@@ -2,6 +2,7 @@ package com.example.FactoryManager.controller;
 
 import com.example.FactoryManager.dto.response.ApiResponse;
 import com.example.FactoryManager.dto.response.ItemResponse;
+import com.example.FactoryManager.dto.response.PageResponse;
 import com.example.FactoryManager.entity.Item;
 import com.example.FactoryManager.service.ItemService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -25,10 +27,13 @@ public class ItemController {
     ItemService itemService;
 
      @GetMapping("/all")
-     public ApiResponse<List<ItemResponse>> getAllItems() {
+     ApiResponse<PageResponse<ItemResponse>> getAllItems(
+             @RequestParam(value = "page", defaultValue = "0") int page,
+             @RequestParam(value = "size", defaultValue = "10") int size
+     ) {
          log.info("Fetching all items");
-         List<ItemResponse> itemResponses = itemService.getAllItems();
-         return ApiResponse.<List<ItemResponse>>builder()
+         PageResponse<ItemResponse> itemResponses = itemService.getAllItems(page, size);
+         return ApiResponse.<PageResponse<ItemResponse>>builder()
                  .code(200)
                  .message("Success")
                  .result(itemResponses)

@@ -1,19 +1,18 @@
 package com.example.FactoryManager.controller;
 
+import com.example.FactoryManager.dto.request.ItemFilterRequest;
 import com.example.FactoryManager.dto.response.ApiResponse;
 import com.example.FactoryManager.dto.response.ItemResponse;
 import com.example.FactoryManager.dto.response.PageResponse;
 import com.example.FactoryManager.entity.Item;
 import com.example.FactoryManager.service.ItemService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,6 +26,11 @@ public class ItemController {
     ItemService itemService;
 
      @GetMapping("/all")
+     @Operation(
+             summary = "Get item list",
+             description = "Returns item information",
+             method = "GET"
+     )
      ApiResponse<PageResponse<ItemResponse>> getAllItems(
              @RequestParam(value = "page", defaultValue = "0") int page,
              @RequestParam(value = "size", defaultValue = "10") int size
@@ -39,4 +43,20 @@ public class ItemController {
                  .result(itemResponses)
                  .build();
      }
+
+     @PostMapping("/filter")
+        @Operation(
+                summary = "Filter items",
+                description = "Returns filtered item information",
+                method = "POST"
+        )
+        ApiResponse<List<ItemResponse>> filterItems(@RequestBody ItemFilterRequest request) {
+            log.info("Filtering items with filters: {}", request.getFilters());
+            List<ItemResponse> itemResponses = itemService.filterItems(request);
+            return ApiResponse.<List<ItemResponse>>builder()
+                    .code(200)
+                    .message("Success")
+                    .result(itemResponses)
+                    .build();
+        }
 }

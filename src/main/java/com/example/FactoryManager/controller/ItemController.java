@@ -50,10 +50,10 @@ public class ItemController {
                 description = "Returns filtered item information",
                 method = "POST"
         )
-        ApiResponse<List<ItemResponse>> filterItems(@RequestBody ItemFilterRequest request) {
+        ApiResponse<PageResponse<ItemResponse>> filterItems(@RequestBody ItemFilterRequest request) {
             log.info("Filtering items with filters: {}", request.getFilters());
-            List<ItemResponse> itemResponses = itemService.filterItems(request);
-            return ApiResponse.<List<ItemResponse>>builder()
+            PageResponse<ItemResponse> itemResponses = itemService.filterItems(request);
+            return ApiResponse.<PageResponse<ItemResponse>>builder()
                     .code(200)
                     .message("Success")
                     .result(itemResponses)

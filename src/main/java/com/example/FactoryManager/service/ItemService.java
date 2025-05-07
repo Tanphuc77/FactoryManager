@@ -59,7 +59,7 @@ public class ItemService {
         return response;
     }
 
-    public List<ItemResponse> filterItems(ItemFilterRequest request) {
+    public PageResponse<ItemResponse> filterItems(ItemFilterRequest request) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Item> cq = cb.createQuery(Item.class);
         Root<Item> root = cq.from(Item.class);
@@ -100,8 +100,12 @@ public class ItemService {
         cq.where(cb.and(predicates.toArray(new Predicate[0])));
         List<Item> items = entityManager.createQuery(cq).getResultList();
         
-        return items.stream()
-                .map(itemMapper::toItemResponse)
-                .collect(Collectors.toList());
+        return PageResponse.<ItemResponse>builder()
+                .content(items.stream()
+                        .map(itemMapper::toItemResponse)
+                        .collect(Collectors.toList()))
+                .totalPages(1)
+                .totalElements(items.size())
+                .build();
     }
 }

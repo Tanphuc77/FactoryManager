@@ -165,6 +165,6 @@ public class Item {
     @Column(name = "qc_date")
     LocalDateTime qcDate;
 
-    @Column(name = "qc_user_ids", columnDefinition = "json")
+    @Column(name = "qc_user_ids")
     String qcUserIds;
 }

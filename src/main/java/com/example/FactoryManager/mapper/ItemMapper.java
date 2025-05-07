@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ItemMapper {
 
-    @Mapping(source = "file", target = "file")
+    @Mapping(source = "file.fileName", target = "fileName")
     ItemResponse toItemResponse(Item item);
 
 }

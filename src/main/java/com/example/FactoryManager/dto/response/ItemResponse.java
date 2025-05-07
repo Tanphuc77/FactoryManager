@@ -1,14 +1,6 @@
 package com.example.FactoryManager.dto.response;
-
-import com.example.FactoryManager.entity.File;
-import jakarta.persistence.Column;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -104,7 +96,7 @@ public class ItemResponse {
 
     UUID jobId;
 
-    FileResponse file;
+    String fileName;
 
     Integer readyQty;
 

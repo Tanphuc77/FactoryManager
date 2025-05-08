@@ -77,7 +77,7 @@ public class SecurityConfig {
                 "https://factorymanager.onrender.com",
                 "http://localhost:5175",
                 "http://localhost:8080",
-                "https://trinhhungquan.github.io/RSSFactoryManagement/"
+                "https://trinhhungquan.github.io/RSSFactoryManagement"
         ));
 
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));

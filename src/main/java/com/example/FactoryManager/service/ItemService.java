@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class ItemService {
     @PersistenceContext
     EntityManager entityManager;
 
+    @PreAuthorize("hasAuthority('GET_ALL_ITEM')")
     public PageResponse<ItemResponse> getAllItems(int page, int size) {
 
         Pageable pageable = PageRequest.of(page, size);
@@ -59,6 +61,7 @@ public class ItemService {
         return response;
     }
 
+    @PreAuthorize("hasAuthority('FILTER_ITEM')")
     public PageResponse<ItemResponse> filterItems(ItemFilterRequest request) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Item> cq = cb.createQuery(Item.class);

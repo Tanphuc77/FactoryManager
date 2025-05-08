@@ -11,6 +11,8 @@ import org.mapstruct.Mapping;
 public interface ItemMapper {
 
     @Mapping(source = "file.fileName", target = "fileName")
+    @Mapping(expression = "java(item.getFTime())", target = "fTime")
+    @Mapping(expression = "java(item.getMRate())", target = "mRate")
     ItemResponse toItemResponse(Item item);
 
 }

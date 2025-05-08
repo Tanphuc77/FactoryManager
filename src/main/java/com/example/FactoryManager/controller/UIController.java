@@ -29,9 +29,6 @@ public class UIController {
     @Autowired
     UIConfigService uiConfigService;
 
-    @Autowired
-    UIMapper uiMapper;
-
    @PutMapping("/save")
    @Operation(
             summary = "Save UI configuration",

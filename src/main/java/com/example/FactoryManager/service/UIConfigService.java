@@ -13,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -29,6 +30,7 @@ public class UIConfigService {
 
     UIMapper uiMapper;
 
+    @PreAuthorize("hasAuthority('SAVE_UI')")
     public UIConfigResponse saveUIConfig(UIConfigRequest uiConfigRequest) {
         User user = userRepository.findById(uiConfigRequest.getUserId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
@@ -54,6 +56,7 @@ public class UIConfigService {
         }
     }
 
+    @PreAuthorize("hasAuthority('GET_USER_CURENT_UI')")
     public UIConfigResponse getUserCurrentUIConfig(User user, String screenCode) {
         log.info("Fetching UI config for userId: {}, screenCode: {}", user.getId(), screenCode);
 

@@ -1,7 +1,6 @@
 package com.example.FactoryManager.service;
 
 import com.example.FactoryManager.dto.response.TeamResponse;
-import com.example.FactoryManager.entity.Team;
 import com.example.FactoryManager.mapper.TeamMapper;
 import com.example.FactoryManager.repository.TeamRepository;
 import lombok.AccessLevel;

@@ -10,7 +10,6 @@ import com.example.FactoryManager.exception.AppException;
 import com.example.FactoryManager.exception.ErrorCode;
 import com.example.FactoryManager.mapper.CompanyMapper;
 import com.example.FactoryManager.repository.CompanyRepository;
-import io.swagger.v3.oas.models.media.Content;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

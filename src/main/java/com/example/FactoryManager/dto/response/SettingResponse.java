@@ -1,9 +1,7 @@
 package com.example.FactoryManager.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.Map;
 
@@ -11,10 +9,12 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class SettingResponse {
 
-    private Integer androidAppTimeout;
-    private Map<String, Double> difficultyLevels;
-    private Integer factoryJobsRefreshTime;
-    private String factoryJobsDisplayDevice;
+    Long settingId;
+    Integer androidAppTimeout;
+    Map<String, Double> difficultyLevels;
+    Integer factoryJobsRefreshTime;
+    String factoryJobsDisplayDevice;
 }

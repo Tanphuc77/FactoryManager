@@ -46,7 +46,7 @@ public class SettingController {
     )
     public ApiResponse<SettingResponse> getSettings(@PathVariable Long id) {
         log.info("Fetching settings with id: {}", id);
-        SettingResponse settingResponse = settingsService.getSettings(id);
+        SettingResponse settingResponse = settingsService.getSetting(id);
         return ApiResponse.<SettingResponse>builder()
                 .code(200)
                 .message("Success")
@@ -62,11 +62,11 @@ public class SettingController {
     )
     public ApiResponse<String> updateSettings(@PathVariable Long id, @RequestBody SettingRequest request) {
         log.info("Updating settings with id: {}", id);
-        SettingResponse settingResponse = settingsService.updateSettings(id, request);
+        SettingResponse settingResponse = settingsService.updateSetting(id, request);
         return ApiResponse.<String>builder()
                 .code(200)
                 .message("Settings updated successfully")
-                .result("Settings updated successfully")
+                .result("settingResponse")
                 .build();
     }
 }
